@@ -8,8 +8,8 @@
 class MAXFile : public ISaveFile
 {
 public:
-	MAXFile() {}
-	~MAXFile() {}
+    MAXFile() {}
+    ~MAXFile() {}
 
     bool read(const std::string &path, PS2Directory &dir)const;
     bool write(const std::string &path, const PS2Directory &dir)const;

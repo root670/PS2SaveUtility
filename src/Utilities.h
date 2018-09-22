@@ -12,13 +12,13 @@ std::string getFileExtension(const std::string &path);
 
 #pragma pack(push, 1)
 typedef struct _sceMcStDateTime {
-	uint8_t  Resv2;
-	uint8_t  Sec;
-	uint8_t  Min;
-	uint8_t  Hour;
-	uint8_t  Day;
-	uint8_t  Month;
-	uint16_t Year;
+    uint8_t  Resv2;
+    uint8_t  Sec;
+    uint8_t  Min;
+    uint8_t  Hour;
+    uint8_t  Day;
+    uint8_t  Month;
+    uint16_t Year;
 } sceMcStDateTime;
 #pragma pack(pop)
 
@@ -31,8 +31,8 @@ public:
     PS2File();
     ~PS2File() {};
     
-    std::string					name;
-	std::vector<unsigned char>	data;
+    std::string                    name;
+    std::vector<unsigned char>    data;
     
     sceMcStDateTime getDateCreated() const { return dateCreated; }
     void            setDateCreated(const sceMcStDateTime &dateCreated);
@@ -58,9 +58,9 @@ class PS2Directory
 public:
     PS2Directory();
     ~PS2Directory() {};
-	
-    std::string				name;
-	std::vector<PS2File>	files;
+    
+    std::string                name;
+    std::vector<PS2File>    files;
     
     sceMcStDateTime getDateCreated() const { return dateCreated; }
     void            setDateCreated(const sceMcStDateTime &dateCreated);
