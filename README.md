@@ -9,7 +9,6 @@ Extension|Action|Supported Devices
 .cbs|Read|CodeBreaker, Cheat Device
 .max, .pws|Read|Action Replay MAX, MAX Drive
 .psu|Read/Write|uLaunchELF, Cheat Device
-.psv|Read|PS2 Emulator on PS3
 .sps, .xps|Read|SharkPort, X-Port V2
 
 ## Building
