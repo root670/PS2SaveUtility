@@ -1,6 +1,6 @@
 # PS2 Save Utility
 
-Convert between various PS2 game save formats.
+Converter for PS2 game save files.
 
 ## Supported File Formats
 
