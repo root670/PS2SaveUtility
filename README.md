@@ -6,7 +6,7 @@ Converter for PS2 game save files.
 
 Extension|Action|Supported Devices
 ---|---|---
-.cbs|Read|CodeBreaker, Cheat Device
+.cbs|Read/Write|CodeBreaker, Cheat Device
 .max, .pws|Read|Action Replay MAX, MAX Drive
 .psu|Read/Write|uLaunchELF, Cheat Device
 .sps, .xps|Read|SharkPort, X-Port V2

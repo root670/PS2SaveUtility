@@ -96,9 +96,66 @@ bool CBSFile::read(const std::string &path, PS2Directory &dir)const
 
 bool CBSFile::write(const std::string &path, const PS2Directory &dir)const
 {
-    // TODO: Implement writing CBS save files
-    std::cout << "Error: writing to .cbs is not supported" << std::endl;
-    return false;
+    // Setup main header
+    cbsHeader_t header;
+    memset(&header, 0, sizeof(header));
+    strncpy(header.magic, "CFU", sizeof(header.magic));
+    strncpy(header.name, dir.name.c_str(), sizeof(header.name));
+    header.unk1         = 0x1F40;
+    header.dataOffset   = 0x128;
+    header.created      = dir.getDateCreated();
+    header.modified     = dir.getDateModified();
+    header.mode         = dir.getMode();
+
+    FILE *f = fopen(path.c_str(), "wb");
+    if(!f)
+    {
+        printf("Error: Can't open %s for writing.\n", path.c_str());
+        return false;
+    }
+
+    static unsigned char data[16 * 1024 * 1024];
+    int dataOffset(0);
+
+    // Create data region
+    for(auto &file : dir.files)
+    {
+        cbsEntry_t entryHeader;
+        memset(&entryHeader, 0, sizeof(entryHeader));
+        strncpy(entryHeader.name, file.name.c_str(), sizeof(entryHeader.name));
+        entryHeader.created     = file.getDateCreated();
+        entryHeader.modified    = file.getDateModified();
+        entryHeader.length      = file.data.size();
+        entryHeader.mode        = file.getMode();
+        
+        memcpy(&data[dataOffset], &entryHeader, sizeof(entryHeader));
+        dataOffset += sizeof(entryHeader);
+
+        memcpy(&data[dataOffset], file.data.data(), file.data.size());
+        dataOffset += file.data.size();
+
+        header.decompressedSize += sizeof(entryHeader) + file.data.size();
+    }
+
+    // Compress data region
+    unsigned long compressedSize = compressBound(header.decompressedSize);
+    std::vector<unsigned char> compressedData(compressedSize);
+    int ret = compress2(compressedData.data(), &compressedSize, (const Bytef *)data, header.decompressedSize, Z_BEST_COMPRESSION);
+    if(ret != Z_OK)
+    {
+        printf("Error: zlib compression failed(%d)\n", ret);
+        return false;
+    }
+    
+    // Write compressed data region
+    header.compressedSize = compressedSize + 0x128;
+    fwrite(&header, 1, sizeof(header), f);
+    rc4Crypt(compressedData.data(), compressedSize);
+    fwrite(compressedData.data(), 1, compressedSize, f);
+
+    fclose(f);
+
+    return true;
 }
 
 bool CBSFile::isValid(const std::vector<unsigned char> &data)const
